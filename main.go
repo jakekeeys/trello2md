@@ -49,6 +49,26 @@ var (
 			EnvVar: "LIST_FILTER",
 			Value:  "Done",
 		},
+		cli.BoolFlag{
+			Name:        "show-labels-and-members",
+			Usage:       "render ticket labels and ticket members",
+			EnvVar:      "SHOW_LABELS_AND_MEMBERS",
+		},
+		cli.BoolFlag{
+			Name:        "show-description",
+			Usage:       "render ticket description",
+			EnvVar:      "SHOW_DESCRIPTION",
+		},
+		cli.BoolFlag{
+			Name:        "show-checklists",
+			Usage:       "render ticket checklists",
+			EnvVar:      "SHOW_CHECKLISTS",
+		},
+		cli.BoolFlag{
+			Name:        "show-comments",
+			Usage:       "render ticket comments",
+			EnvVar:      "SHOW_COMMENTS",
+		},
 	}
 
 	searchBoardsArgs = []cli.Flag{
@@ -132,31 +152,39 @@ func exportBoards(c *cli.Context) error {
 				return err
 			}
 
-			err = printCardLabelsAndMembers(&card)
-			if err != nil {
-				return err
-			}
-
-			printCardDescription(&card)
-
-			checklists, err := getCardCheckLists(&card)
-			if err != nil {
-				return err
-			}
-
-			for _, checklist := range *checklists {
-				printCardChecklist(&checklist)
-			}
-
-			commentActions, err := getCardComments(&card)
-			if err != nil {
-				return err
-			}
-
-			for _, commentAction := range *commentActions {
-				err := printCardComments(&commentAction)
+			if c.Bool("show-labels-and-members") {
+				err = printCardLabelsAndMembers(&card)
 				if err != nil {
 					return err
+				}
+			}
+
+			if c.Bool("show-description") {
+				printCardDescription(&card)
+			}
+
+			if c.Bool("show-checklists") {
+				checklists, err := getCardCheckLists(&card)
+				if err != nil {
+					return err
+				}
+
+				for _, checklist := range *checklists {
+					printCardChecklist(&checklist)
+				}
+			}
+
+			if c.Bool("show-comments") {
+				commentActions, err := getCardComments(&card)
+				if err != nil {
+					return err
+				}
+
+				for _, commentAction := range *commentActions {
+					err := printCardComments(&commentAction)
+					if err != nil {
+						return err
+					}
 				}
 			}
 		}
