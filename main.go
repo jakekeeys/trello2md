@@ -70,6 +70,11 @@ var (
 			Usage:       "render ticket comments",
 			EnvVar:      "SHOW_COMMENTS",
 		},
+		cli.BoolFlag{
+			Name:        "show-attachments",
+			Usage:       "render ticket attachments",
+			EnvVar:      "SHOW_ATTACHMENTS",
+		},
 	}
 
 	searchBoardsArgs = []cli.Flag{
@@ -164,6 +169,17 @@ func exportBoards(c *cli.Context) error {
 				printCardDescription(&card)
 			}
 
+			if c.Bool("show-attachments") {
+				attachments, err := getCardAttachments(&card)
+				if err != nil {
+					return err
+				}
+
+				for _, attachment := range *attachments {
+					printCardAttachment(&attachment)
+				}
+			}
+
 			if c.Bool("show-checklists") {
 				checklists, err := getCardCheckLists(&card)
 				if err != nil {
@@ -182,7 +198,7 @@ func exportBoards(c *cli.Context) error {
 				}
 
 				for _, commentAction := range *commentActions {
-					err := printCardComments(&commentAction)
+					err := printCardComment(&commentAction)
 					if err != nil {
 						return err
 					}
@@ -341,7 +357,7 @@ func getCardComments(card *trello.Card) (*[]trello.Action, error) {
 	return &commentCardActions, nil
 }
 
-func printCardComments(commentAction *trello.Action) error {
+func printCardComment(commentAction *trello.Action) error {
 	actionDate, err := time.Parse(time.RFC3339, commentAction.Date)
 	if err != nil {
 		return err
@@ -351,4 +367,18 @@ func printCardComments(commentAction *trello.Action) error {
 	fmt.Printf("> %s\n\n", strings.Replace(commentAction.Data.Text, "\n", "\n> ", -1))
 
 	return nil
+}
+
+func getCardAttachments(card *trello.Card) (*[]trello.Attachment, error) {
+	attachments, err := card.Attachments()
+	if err != nil {
+		return nil, err
+	}
+
+	return &attachments, nil
+}
+
+func printCardAttachment(attatchment *trello.Attachment) {
+	fmt.Printf("**%s**\n", attatchment.Name)
+	fmt.Printf("![%s](%s)\n", attatchment.Name, attatchment.Url)
 }
