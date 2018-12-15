@@ -318,7 +318,7 @@ func printCardComments(commentAction *trello.Action) error {
 		return err
 	}
 
-	fmt.Printf("> **%s** - **%s:**\n> \n", actionDate.Format(dateFormat), commentAction.MemberCreator.FullName)
+	fmt.Printf("> **%s** - **%s:**\n", actionDate.Format(dateFormat), commentAction.MemberCreator.FullName)
 	fmt.Printf("> %s\n\n", strings.Replace(commentAction.Data.Text, "\n", "\n> ", -1))
 
 	return nil
