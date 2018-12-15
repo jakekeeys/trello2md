@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -236,6 +237,20 @@ func getCards(list *trello.List) (*[]trello.Card, error) {
 		return nil, err
 	}
 
+	sort.Slice(cards, func(i, j int) bool {
+		iDate, err := time.Parse(time.RFC3339, cards[i].DateLastActivity)
+		if err != nil {
+			log.Panic(err)
+		}
+
+		jDate, err := time.Parse(time.RFC3339, cards[j].DateLastActivity)
+		if err != nil {
+			log.Panic(err)
+		}
+
+		return iDate.Before(jDate)
+	})
+
 	return &cards, nil
 }
 
@@ -308,6 +323,20 @@ func getCardComments(card *trello.Card) (*[]trello.Action, error) {
 			commentCardActions = append(commentCardActions, action)
 		}
 	}
+
+	sort.Slice(commentCardActions, func(i, j int) bool {
+		iDate, err := time.Parse(time.RFC3339, commentCardActions[i].Date)
+		if err != nil {
+			log.Panic(err)
+		}
+
+		jDate, err := time.Parse(time.RFC3339, commentCardActions[j].Date)
+		if err != nil {
+			log.Panic(err)
+		}
+
+		return iDate.Before(jDate)
+	})
 
 	return &commentCardActions, nil
 }
