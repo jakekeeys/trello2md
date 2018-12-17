@@ -379,6 +379,6 @@ func getCardAttachments(card *trello.Card) (*[]trello.Attachment, error) {
 }
 
 func printCardAttachment(attatchment *trello.Attachment) {
-	fmt.Printf("**%s**\n", attatchment.Name)
-	fmt.Printf("![%s](%s)\n", attatchment.Name, attatchment.Url)
+	fmt.Printf("[%s](%s)\n", attatchment.Name, attatchment.Url)
+	fmt.Printf("![](%s)\n\n", attatchment.Url)
 }
