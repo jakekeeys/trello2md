@@ -316,7 +316,7 @@ func getCardCheckLists(card *trello.Card) (*[]trello.Checklist, error) {
 }
 
 func printCardChecklist(checklist *trello.Checklist) {
-	fmt.Printf("**%s**\n", checklist.Name)
+	fmt.Printf("%s\n", checklist.Name)
 	for _, checkItem := range checklist.CheckItems {
 		if checkItem.State == "complete" {
 			fmt.Printf("- [x] %s\n", checkItem.Name)
