@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"sort"
 	"strings"
 	"time"
 
-	"github.com/VojtechVitek/go-trello"
+	"github.com/jakekeeys/go-trello"
 	trello_search "github.com/adlio/trello"
 	"github.com/pkg/errors"
 	"github.com/urfave/cli"
-	"github.com/utilitywarehouse/uwgolib/log"
 )
 
 const (
